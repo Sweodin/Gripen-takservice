@@ -1,4 +1,4 @@
-name: Deploy Website to Hostinger via SFTP
+name: Deploy to Hostinger
 
 on:
   push:
@@ -6,19 +6,20 @@ on:
       - master
 
 jobs:
-  web-deploy:
-    name: Deploy to SFTP
+  deploy:
+    name: Deploy to Hostinger via SFTP/SCP
     runs-on: ubuntu-latest
     steps:
-    - name: Get latest code
-      uses: actions/checkout@v4
-    
-    - name: Sync files to Hostinger via SFTP
-      uses: easingthemes/sftp-deploy@v3
-      env:
-        SFTP_HOST: ${{ secrets.FTP_SERVER }}
-        SFTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-        SFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-        LOCAL_PATH: './'
-        REMOTE_PATH: './public_html'
-        ARGS: '-o StrictHostKeyChecking=no'
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: 22
+          source: "."
+          target: "./public_html"
+          overwrite: true
