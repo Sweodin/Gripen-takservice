@@ -1,4 +1,4 @@
-name: Deploy Website to Hostinger
+name: Deploy Website to Hostinger via SFTP
 
 on:
   push:
@@ -7,19 +7,18 @@ on:
 
 jobs:
   web-deploy:
-    name: Deploy to FTP
+    name: Deploy to SFTP
     runs-on: ubuntu-latest
     steps:
     - name: Get latest code
       uses: actions/checkout@v4
     
-    - name: Sync files to Hostinger
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        protocol: ftps
-        local-dir: ./
-        server-dir: ./public_html/
-        dangerous-clean-slate: true
+    - name: Sync files to Hostinger via SFTP
+      uses: easingthemes/sftp-deploy@v3
+      env:
+        SFTP_HOST: ${{ secrets.FTP_SERVER }}
+        SFTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+        SFTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+        LOCAL_PATH: './'
+        REMOTE_PATH: './public_html'
+        ARGS: '-o StrictHostKeyChecking=no'
