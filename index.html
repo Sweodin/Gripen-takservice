@@ -46,7 +46,7 @@
             <ul class="about-us-points">
               <li><strong>Vår Vision:</strong> Att leverera högkvalitativa tätskiktsarbeten med fokus på hållbarhet, precision och kundnöjdhet.</li>
               <li><strong>Kvalitetsgaranti:</strong> Som anslutna entreprenörer till Katepal arbetar vi enligt deras strikta riktlinjer för att garantera högsta standard.</li>
-              <li><strong>Kontakt:</strong> För personlig service och expertis, kontakta Henrik Jönsson direkt på <a href="tel:+46702521063">+46 70 252 10 63</a>.</li>
+              <li><strong>Kontakt:</strong> För personlig service och expertis, kontakta Henrik Jönsson direkt på <a href="tel:+46702521063">+46 70 252 10 63</a> eller via e-post på <a href="mailto:kalkyl@gripentak.info">kalkyl@gripentak.info</a>.</li>
             </ul>
           </div>
         </section>
@@ -125,21 +125,31 @@
 
         <section id="contact" class="gripen-contact-form">
           <h2>Kontakta Oss</h2>
-          <p>Fyll i formuläret nedan eller maila oss direkt på <a href="mailto:kalkyl@gripentak.info">kalkyl@gripentak.info</a>.</p>
-          <form action="mailto:kalkyl@gripentak.info" method="post" enctype="text/plain">
-            <input type="text" name="name" placeholder="Ditt Namn" required />
-            <input
-              type="email"
-              name="email"
-              placeholder="Din E-post"
-              required
-            />
-            <input type="tel" name="phone" placeholder="Ditt Telefonnummer" />
-            <textarea
-              name="message"
-              rows="5"
-              placeholder="Ditt Meddelande"
-            ></textarea>
+          <p>Välj om du kontaktar oss som privatperson eller företag och fyll i formuläret nedan.</p>
+          <form id="contactForm">
+            <div class="form-customer-type">
+              <label>
+                <input type="radio" name="customerType" value="privat" checked> Privatperson
+              </label>
+              <label>
+                <input type="radio" name="customerType" value="foretag"> Företag
+              </label>
+            </div>
+            <div id="companyField" class="form-group" style="display: none;">
+              <input type="text" name="companyName" placeholder="Företagsnamn">
+            </div>
+            <div class="form-group">
+              <input type="text" name="name" placeholder="Ditt Namn" required>
+            </div>
+            <div class="form-group">
+              <input type="email" name="email" placeholder="Din E-post" required>
+            </div>
+            <div class="form-group">
+              <input type="tel" name="phone" placeholder="Ditt Telefonnummer" required>
+            </div>
+            <div class="form-group">
+              <textarea name="message" rows="5" placeholder="Ditt Meddelande" required></textarea>
+            </div>
             <button type="submit">Skicka Meddelande</button>
           </form>
         </section>
@@ -151,12 +161,65 @@
     </div>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
+        // Mobile menu logic
         const menuBtn = document.querySelector('.gripen-mobile-menu-btn');
         const navList = document.querySelector('.gripen-nav-list');
 
         if (menuBtn && navList) {
           menuBtn.addEventListener('click', function () {
             navList.classList.toggle('active');
+          });
+        }
+
+        // Advanced contact form logic
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+          const customerTypeRadios = contactForm.querySelectorAll('input[name=\"customerType\"]');
+          const companyField = document.getElementById('companyField');
+          const companyNameInput = companyField.querySelector('input[name=\"companyName\"]');
+
+          customerTypeRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+              if (this.value === 'foretag') {
+                companyField.style.display = 'block';
+                companyNameInput.required = true;
+              } else {
+                companyField.style.display = 'none';
+                companyNameInput.required = false;
+                companyNameInput.value = ''; // Clear value when hiding
+              }
+            });
+          });
+
+          contactForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const name = this.elements['name'].value;
+            const email = this.elements['email'].value;
+            const phone = this.elements['phone'].value;
+            const message = this.elements['message'].value;
+            const customerType = this.elements['customerType'].value;
+
+            let subject = `Kontaktförfrågan från ${name}`;
+            let body = `Ett nytt meddelande har skickats från hemsidan:\n\n`;
+            body += `------------------------------------------------------\n`;
+            body += `KUNDTYP: ${customerType === 'privat' ? 'Privatperson' : 'Företag'}\n`;
+            
+            if (customerType === 'foretag') {
+              const companyName = this.elements['companyName'].value;
+              subject += ` (${companyName})`;
+              body += `FÖRETAGSNAMN: ${companyName}\n`;
+            }
+
+            body += `NAMN: ${name}\n`;
+            body += `E-POST: ${email}\n`;
+            body += `TELEFON: ${phone}\n`;
+            body += `------------------------------------------------------\n\n`;
+            body += `MEDDELANDE:\n${message}\n`;
+
+            const mailtoLink = `mailto:kalkyl@gripentak.info?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+            window.location.href = mailtoLink;
           });
         }
       });
