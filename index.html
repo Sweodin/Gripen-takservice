@@ -126,7 +126,7 @@
         <section id="contact" class="gripen-contact-form">
           <h2>Kontakta Oss</h2>
           <p>Välj om du kontaktar oss som privatperson eller företag och fyll i formuläret nedan.</p>
-          <form id="contactForm">
+          <form id="contactForm" action="https://formspree.io/f/moqgzlpb" method="POST">
             <div class="form-customer-type">
               <label>
                 <input type="radio" name="customerType" value="privat" checked> Privatperson
@@ -191,36 +191,7 @@
             });
           });
 
-          contactForm.addEventListener('submit', function(event) {
-            event.preventDefault();
 
-            const name = this.elements['name'].value;
-            const email = this.elements['email'].value;
-            const phone = this.elements['phone'].value;
-            const message = this.elements['message'].value;
-            const customerType = this.elements['customerType'].value;
-
-            let subject = `Kontaktförfrågan från ${name}`;
-            let body = `Ett nytt meddelande har skickats från hemsidan:\n\n`;
-            body += `------------------------------------------------------\n`;
-            body += `KUNDTYP: ${customerType === 'privat' ? 'Privatperson' : 'Företag'}\n`;
-            
-            if (customerType === 'foretag') {
-              const companyName = this.elements['companyName'].value;
-              subject += ` (${companyName})`;
-              body += `FÖRETAGSNAMN: ${companyName}\n`;
-            }
-
-            body += `NAMN: ${name}\n`;
-            body += `E-POST: ${email}\n`;
-            body += `TELEFON: ${phone}\n`;
-            body += `------------------------------------------------------\n\n`;
-            body += `MEDDELANDE:\n${message}\n`;
-
-            const mailtoLink = `mailto:kalkyl@gripentak.info?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-            window.location.href = mailtoLink;
-          });
         }
       });
     </script>
